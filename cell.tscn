@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://sj0y76g67nkd"]
+
+[ext_resource type="Script" uid="uid://c1lm74bhotq37" path="res://cell.gd" id="1_yh0nt"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gwrgs"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yh0nt"]
+size = Vector2(100, 100)
+
+[node name="Cell" type="Area2D" unique_id=239431389]
+material = SubResource("CanvasItemMaterial_gwrgs")
+script = ExtResource("1_yh0nt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=388347774]
+shape = SubResource("RectangleShape2D_yh0nt")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1983529894]
+polygon = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0)
