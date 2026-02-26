@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b57tbcdm4klyj"]
+
+[ext_resource type="PackedScene" uid="uid://cwo53ao2msf4o" path="res://world.tscn" id="1_80nbo"]
+[ext_resource type="Script" uid="uid://bj2pprykrrrh8" path="res://camera.gd" id="2_e2o6t"]
+
+[node name="Game" type="Node2D" unique_id=1691934131]
+
+[node name="World" parent="." unique_id=1698811682 instance=ExtResource("1_80nbo")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=373021589]
+position = Vector2(5499, 3002)
+zoom = Vector2(0.1, 0.1)
+script = ExtResource("2_e2o6t")
