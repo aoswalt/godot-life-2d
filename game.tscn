@@ -6,6 +6,7 @@
 [node name="Game" type="Node2D" unique_id=1691934131]
 
 [node name="World" parent="." unique_id=1698811682 instance=ExtResource("1_80nbo")]
+speed = 10.0
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=373021589]
 position = Vector2(5499, 3002)

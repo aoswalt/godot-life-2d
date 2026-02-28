@@ -1,7 +1,6 @@
 extends Area2D
 
 @export var coords: Vector2i
-@export var cell_clicked: Signal
 
 @export var alive: bool = false
 
@@ -36,4 +35,3 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		match event.button_index:
 			MOUSE_BUTTON_LEFT:
 				alive = !alive
-				cell_clicked.emit(coords, alive)
