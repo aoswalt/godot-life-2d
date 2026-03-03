@@ -1,14 +1,39 @@
 [gd_scene format=3 uid="uid://b57tbcdm4klyj"]
 
-[ext_resource type="PackedScene" uid="uid://cwo53ao2msf4o" path="res://world.tscn" id="1_80nbo"]
+[ext_resource type="Script" uid="uid://c2ojsqm6a8yb3" path="res://game.gd" id="1_feb5d"]
 [ext_resource type="Script" uid="uid://bj2pprykrrrh8" path="res://camera.gd" id="2_e2o6t"]
+[ext_resource type="Script" uid="uid://4ddwxrt1oajk" path="res://clicker.gd" id="3_feb5d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e2o6t"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_e2o6t"]
+load_path = "res://.godot/imported/binary-tiles-100px.png-a5240e00557976241f2380efb5247c27.ctex"
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_feb5d"]
+texture = SubResource("CompressedTexture2D_e2o6t")
+texture_region_size = Vector2i(100, 100)
+0:0/0 = 0
+1:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_fc0e3"]
+tile_size = Vector2i(100, 100)
+sources/1 = SubResource("TileSetAtlasSource_feb5d")
 
 [node name="Game" type="Node2D" unique_id=1691934131]
-
-[node name="World" parent="." unique_id=1698811682 instance=ExtResource("1_80nbo")]
-speed = 10.0
+script = ExtResource("1_feb5d")
+speed = 5.0
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=373021589]
 position = Vector2(5499, 3002)
 zoom = Vector2(0.1, 0.1)
 script = ExtResource("2_e2o6t")
+
+[node name="Clicker" type="Area2D" parent="." unique_id=1738435617]
+script = ExtResource("3_feb5d")
+
+[node name="Collider" type="CollisionShape2D" parent="Clicker" unique_id=1817924877]
+shape = SubResource("RectangleShape2D_e2o6t")
+
+[node name="WorldTiles" type="TileMapLayer" parent="Clicker" unique_id=143917955]
+unique_name_in_owner = true
+tile_set = SubResource("TileSet_fc0e3")

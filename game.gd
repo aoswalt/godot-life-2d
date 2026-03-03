@@ -1,5 +1,8 @@
 extends Node2D
 
+@onready var world_tiles: TileMapLayer = %WorldTiles
+@onready var clicker: Area2D = $Clicker
+
 @export var size := Vector2i(100, 100)
 @export var speed := 1.0
 @export var paused := false
@@ -7,23 +10,40 @@ extends Node2D
 var next_gen_time_max := 1.0
 var next_gen_time := next_gen_time_max
 
-var cell_scene: PackedScene = preload("res://cell.tscn")
-
-var cell_map: Dictionary[Vector2i, Node] = { }
-var next_map: Dictionary[Vector2i, bool] = { }
+var active_map: Dictionary[Vector2i, bool] = { }
+var next_map := active_map.duplicate()
 
 
 func _ready() -> void:
 	for y: int in size.y:
 		for x: int in size.x:
-			var cell: Node = cell_scene.instantiate()
-			cell.coords = Vector2i(x, y)
-			cell.position = cell.coords * 100
-			cell_map[cell.coords] = cell
-			add_child(cell)
+			var coords := Vector2i(x, y)
+			set_cell(coords, false)
 			
-	set_pattern(Vector2i(10, 10), seed_inf_1)
+	clicker.update_area()
 
+	next_map = active_map.duplicate()
+
+	set_pattern(Vector2i(4, 4), seed_inf_1)
+	
+	clicker.cell_toggled.connect(_on_cell_toggled)
+
+
+func set_cell(coords: Vector2i, alive: bool) -> void:
+	active_map[coords] = alive
+	set_tile(coords, alive)
+
+
+func set_tile(coords: Vector2i, alive: bool) -> void:
+	world_tiles.set_cell(coords, 1, Vector2i(1 if alive else 0, 0))
+
+
+func toggle_cell(coords: Vector2i) -> void:
+	var alive := world_tiles.get_cell_atlas_coords(coords).x == 1
+	set_cell(coords, !alive)
+
+func _on_cell_toggled(coords: Vector2i) -> void:
+	toggle_cell(coords)
 
 func _process(delta: float) -> void:
 	if paused:
@@ -39,10 +59,14 @@ func _process(delta: float) -> void:
 				var coords := Vector2i(x, y)
 				next_map[coords] = is_alive(coords)
 
+		var swap_map := active_map
+		active_map = next_map
+		next_map = swap_map
+
 		for y: int in size.y:
 			for x: int in size.x:
 				var coords := Vector2i(x, y)
-				cell_map[coords].alive = next_map[coords]
+				set_cell(coords, active_map[coords])
 
 
 func is_alive(coords: Vector2i) -> bool:
@@ -65,14 +89,14 @@ func is_alive(coords: Vector2i) -> bool:
 			elif neighbor_coords.y == size.y:
 				neighbor_coords.y = 0
 
-			if cell_map[neighbor_coords].alive:
+			if active_map[neighbor_coords]:
 				neighbors += 1
 
 	match neighbors:
 		var n when n < 2:
 			return false
 		2:
-			return cell_map[coords].alive
+			return active_map[coords]
 		3:
 			return true
 		_:
@@ -82,6 +106,13 @@ func is_alive(coords: Vector2i) -> bool:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		paused = !paused
+
+
+
+
+func set_pattern(coords: Vector2i, pattern: Array[Vector2i]) -> void:
+	for location in pattern:
+		set_cell(location + coords, true)
 
 
 var seed_inf_1: Array[Vector2i] = [
@@ -99,7 +130,3 @@ var seed_inf_1: Array[Vector2i] = [
 	Vector2i(2, 4),
 	Vector2i(4, 4),
 ]
-
-func set_pattern(coords: Vector2i, pattern: Array[Vector2i]) -> void:
-	for cell in pattern:
-		cell_map[coords + cell].alive = true
